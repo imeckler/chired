@@ -27,17 +27,10 @@ authorize = maybe (return (Left "No Authorization header found")) auth . credent
 
   decode = undefined
 
-{-
-data Post = Post { title :: String, score :: Int }
-  deriving (Show, Read)
--}
-
-type Post = (String, Int)
 type PostDB = M.Map String Int
 
 readPostDB :: IO PostDB
 readPostDB = read <$> readFile "posts"
-
 
 postsToJSON :: PostDB -> T.Text
 postsToJSON posts = "[" <> T.intercalate "," (map postToJSON (M.toList posts)) <> "]" where
