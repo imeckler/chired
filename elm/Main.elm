@@ -10,7 +10,7 @@ import Text
 import Json.Decode
 import Json.Decode ((:=))
 
-type alias Post = {title : String, score : Int}
+type alias Post = {title : String, score : Int, vote : Vote}
 
 posts = 
   let postJson = Json.Decode.object2 (\t s -> {title = t, score = s}) 
@@ -29,9 +29,21 @@ posts =
 renderPosts : List Post -> Html.Html
 renderPosts = Html.ol [] << List.map renderPost
 
+voteButtons : String -> Html.Html
+voteButtons title =
+  let upVote   = Html.button [on
+      downVote = 
+
 renderPost p = Html.text (p.title ++ ", " ++ toString p.score)
 
-upvotes : Channel
+type Vote = Up | Down | None
+
+-- How is username transmitted?!
+type Action
+  = SetVote Title Vote
+
+actions : Channel Action
+actions = Signal.channel (SetVote "" None)
 
 -- scene : List Post -> (Int, Int) -> Element
 scene ps (w,h) = Html.toElement w h (renderPosts ps)
