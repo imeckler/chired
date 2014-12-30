@@ -63,7 +63,8 @@ executable chired
                        containers >= 0.5.5,
                        text >= 1.2.0.3,
                        transformers >= 0.4.2,
-                       wai >= 3
+                       wai >= 3,
+                       clientsession >= 0.9
   
   -- Directories containing source files.
   -- hs-source-dirs:      

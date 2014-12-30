@@ -1,52 +1,126 @@
 module Main where
 
+import Util(..)
 import Window
 import Http
 import Html
+import Html.Events
 import Signal
 import List
 import Graphics.Element
 import Text
 import Json.Decode
 import Json.Decode ((:=))
+import Maybe
+import Dict
+import Debug
 
-type alias Post = {title : String, score : Int, vote : Vote}
+-- Model
+type alias ID    = Int
+type Vote        = Up | Down | None
+type alias Post  = {title : String, score : Int, vote : Vote, idNum : ID}
+type alias State =
+  { postDB : Dict.Dict Int Post
+  }
 
-posts = 
-  let postJson = Json.Decode.object2 (\t s -> {title = t, score = s}) 
-                   ("title" := Json.Decode.string) ("score" := Json.Decode.int)
-      readResp r =
+-- User input
+type Action = NoOp | ClickUp ID | ClickDown ID
+
+actions : Signal.Channel Action
+actions = Signal.channel NoOp
+
+-- Messages from server
+type Update
+  = SetVote ID Vote
+  | SetDB (Dict.Dict Int Post)
+  | Error String
+
+-- Parsing messages
+parseVote s = case s of
+  "Up"   -> Up
+  "Down" -> Down
+  _      -> None
+
+postJson =
+  Json.Decode.object4 (\t s n v -> {title = t, score = s, idNum = n, vote = v})
+    ("title" := Json.Decode.string)
+    ("score" := Json.Decode.int)
+    ("idNum" := Json.Decode.int)
+    ("vote"  := Json.Decode.map parseVote Json.Decode.string)
+
+updateJson =
+  Json.Decode.oneOf
+  [ Json.Decode.object2 (\idNum v -> SetVote idNum v)
+      ("idNum" := Json.Decode.int)
+      ("vote"  := Json.Decode.map parseVote Json.Decode.string)
+  , Json.Decode.map (SetDB << Dict.fromList << List.map (\p -> (p.idNum, p)))
+      (Json.Decode.list postJson)
+  ]
+
+decodeUpdate : Http.Response String -> Update
+decodeUpdate = 
+  let decode r =
         case r of
-          Http.Success s ->
-            case Json.Decode.decodeString (Json.Decode.list postJson) s of
-              Ok ps -> ps
-              _      -> []
-          _         -> []
+          Http.Success s   -> Json.Decode.decodeString updateJson s
+          Http.Waiting     -> Err "Waiting"
+          Http.Failure _ s -> Err s
+      fromResult ex =
+        case ex of
+          Ok x  -> x
+          Err s -> Error s
   in
-  Http.sendGet (Signal.constant "http://localhost:3000/foo")
-  |> Signal.map readResp
+  fromResult << decode
 
-renderPosts : List Post -> Html.Html
-renderPosts = Html.ol [] << List.map renderPost
+-- Messages from server
+postDBUpdates : Signal Update
+postDBUpdates = 
+  Http.sendGet (Signal.constant "http://localhost:3000/posts")
+  |> Signal.map decodeUpdate
 
-voteButtons : String -> Html.Html
-voteButtons title =
-  let upVote   = Html.button [on
-      downVote = 
+updates : Signal.Signal Update
+updates =
+  let encode a =
+        case a of
+          NoOp            -> Http.get "/noop" -- No filterMap for signals...
+          ClickUp idNum   -> Http.get ("/up/" ++ toString idNum)
+          ClickDown idNum -> Http.get ("/down/" ++ toString idNum)
+  in
+  Http.send (Signal.map encode (Signal.subscribe actions))
+  |> Signal.map decodeUpdate
+  |> Signal.merge postDBUpdates
 
-renderPost p = Html.text (p.title ++ ", " ++ toString p.score)
+-- Display
+render : State -> Html.Html
+render = Html.ol [] << List.map renderPost << List.sortBy .score << Dict.values << .postDB
 
-type Vote = Up | Down | None
+voteButtons : Post -> Html.Html
+voteButtons p =
+  let voteButton f s = Html.button [Html.Events.onClick (Signal.send actions (f p.idNum))] [Html.text p.title]
+      upVote         = voteButton ClickUp "+"
+      downVote       = voteButton ClickDown "-"
+  in
+  Html.div [] [upVote, downVote]
 
--- How is username transmitted?!
-type Action
-  = SetVote Title Vote
+renderPost p = Html.li [] [Html.text (p.title ++ ", " ++ toString p.score), voteButtons p]
 
-actions : Channel Action
-actions = Signal.channel (SetVote "" None)
+update : Update -> State -> State
+update u s = case u of
+  SetVote idNum v ->
+    {s | postDB <- Dict.update idNum (Maybe.map (\p -> {p | vote <- v})) s.postDB}
 
--- scene : List Post -> (Int, Int) -> Element
-scene ps (w,h) = Html.toElement w h (renderPosts ps)
+  SetDB db -> {s | postDB <- db}
 
-main = Signal.map2 scene posts Window.dimensions
+  Error e -> Debug.log e s
+
+-- scene : State -> (Int, Int) -> Element
+scene s (w,h) =
+  Html.body []
+  [ Html.h1 [] [Html.text "Vote"]
+  , Html.main' [] [render s]
+  ]
+  |> Html.toElement w h
+
+state = Signal.foldp update {postDB = Dict.empty} updates
+
+main = Signal.map2 scene state Window.dimensions
 
