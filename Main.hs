@@ -66,7 +66,7 @@ authorize = maybe (return (Left "No Authorization header found")) auth . credent
 authorize :: String -> String -> IO (Maybe ())
 authorize cnetId password = handleLDAP (\err -> print err >> return Nothing) $ do
   print 1
-  ld <- ldapInit "ldaps://ldap.uchicago.edu" 636
+  ld <- ldapInit "ldap.uchicago.edu" 636
   -- 389 -- 636
   print 2
   ldapSimpleBind ld ("uid=" ++ cnetId ++ ",ou=people,dc=uchicago,dc=edu") password
