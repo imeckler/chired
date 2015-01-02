@@ -32,7 +32,7 @@ actions = Signal.channel NoOp
 -- Messages from server
 type Update
   = SetVote ID Vote
-  | SetDB (Dict.Dict Int Post)
+  | SetDB (Dict.Dict ID Post)
   | Error String
 
 -- Parsing messages
@@ -81,9 +81,9 @@ updates : Signal.Signal Update
 updates =
   let encode a =
         case a of
-          NoOp            -> Http.get "/noop" -- No filterMap for signals...
-          ClickUp idNum   -> Http.get ("/up/" ++ toString idNum)
-          ClickDown idNum -> Http.get ("/down/" ++ toString idNum)
+          NoOp            -> Http.get "/actions/noop" -- No filterMap for signals...
+          ClickUp idNum   -> Http.get ("/actions/up/" ++ toString idNum)
+          ClickDown idNum -> Http.get ("/actions/down/" ++ toString idNum)
   in
   Http.send (Signal.map encode (Signal.subscribe actions))
   |> Signal.map decodeUpdate

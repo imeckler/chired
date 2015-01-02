@@ -59,12 +59,15 @@ executable chired
   -- Other library packages from which modules are imported.
   build-depends:       base >=4.7 && <4.8,
                        LDAP >= 0.6.10,
+                       aeson >= 0.8,
                        scotty >= 0.9.0,
                        containers >= 0.5.5,
                        text >= 1.2.0.3,
+                       bytestring >= 0.10,
                        transformers >= 0.4.2,
                        wai >= 3,
-                       clientsession >= 0.9
+                       clientsession >= 0.9,
+                       wai-middleware-static >= 0.6
   
   -- Directories containing source files.
   -- hs-source-dirs:      
