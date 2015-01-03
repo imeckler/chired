@@ -97,7 +97,7 @@ decodeUpdate =
 -- Messages from server
 postDBUpdates : Signal Update
 postDBUpdates = 
-  Http.sendGet (Signal.constant "http://lambda.cloudapp.net/posts")
+  Http.sendGet (Signal.constant "/posts")
   |> Signal.map decodeUpdate
 
 updates : Signal.Signal Update
@@ -188,7 +188,7 @@ scene s (w,h) =
           Html.a [href "/submit.html"]
             [Html.button [class "btn btn-default"] [Html.text "Submit post"]]
   in
-  Html.body []
+  Html.div [class "container"]
   [ Html.div [class "page-header"]
     [ Html.h1 [] [Html.text "CMSC 22300: Vote"]
     , actionButton 

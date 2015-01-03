@@ -4272,7 +4272,7 @@ Elm.Main.make = function (_elm) {
          return fromResult(decode($));
       };
    }();
-   var postDBUpdates = $Signal.map(decodeUpdate)($Http.sendGet($Signal.constant("http://lambda.cloudapp.net/posts")));
+   var postDBUpdates = $Signal.map(decodeUpdate)($Http.sendGet($Signal.constant("/posts")));
    var updates = function () {
       var encode = function (a) {
          return function () {
@@ -4401,8 +4401,8 @@ Elm.Main.make = function (_elm) {
                  }();
                  return A2($Html.toElement,
                  _v20._0,
-                 _v20._1)(A2($Html.body,
-                 _L.fromArray([]),
+                 _v20._1)(A2($Html.div,
+                 _L.fromArray([$Html$Attributes.$class("container")]),
                  _L.fromArray([A2($Html.div,
                               _L.fromArray([$Html$Attributes.$class("page-header")]),
                               _L.fromArray([A2($Html.h1,

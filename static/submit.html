@@ -18,25 +18,27 @@
   </head>
 
   <body>
-    <div class='page-header'>
-      <h1>Submit a post</h1>
-    </div>
-    <div class='well'>
-      <p>
-        The syntax for links is [link text](url).
-      </p>
-
-      <p>
-        You can use <a href='http://share-elm.com/'>share-elm</a> to host your
-        code.
-      </p>
-    </div>
-    <form id='postform' action='newpost' method='GET'>
-      <input id='titlebox' type='text' name='title' placeholder='Title'>
-      <div>
-        <textarea rows=6 id='textbox' required='' name='content'></textarea>
+    <div class='container'>
+      <div class='page-header'>
+        <h1>Submit a post</h1>
       </div>
-      <input type='submit' value='Submit'>
-    </form>
+      <div class='well'>
+        <p>
+          The syntax for links is [link text](url).
+        </p>
+
+        <p>
+          You can use <a href='http://share-elm.com/'>share-elm</a> to host your
+          code.
+        </p>
+      </div>
+      <form id='postform' action='newpost' method='GET'>
+        <input id='titlebox' type='text' name='title' placeholder='Title'>
+        <div>
+          <textarea rows=6 id='textbox' required='' name='content'></textarea>
+        </div>
+        <input type='submit' value='Submit'>
+      </form>
+    </div>
   </body>
 </html>
