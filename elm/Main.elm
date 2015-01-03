@@ -97,7 +97,7 @@ decodeUpdate =
 -- Messages from server
 postDBUpdates : Signal Update
 postDBUpdates = 
-  Http.sendGet (Signal.constant "http://localhost:3000/posts")
+  Http.sendGet (Signal.constant "http://lambda.cloudapp.net/posts")
   |> Signal.map decodeUpdate
 
 updates : Signal.Signal Update

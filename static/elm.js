@@ -4272,7 +4272,7 @@ Elm.Main.make = function (_elm) {
          return fromResult(decode($));
       };
    }();
-   var postDBUpdates = $Signal.map(decodeUpdate)($Http.sendGet($Signal.constant("http://localhost:3000/posts")));
+   var postDBUpdates = $Signal.map(decodeUpdate)($Http.sendGet($Signal.constant("http://lambda.cloudapp.net/posts")));
    var updates = function () {
       var encode = function (a) {
          return function () {
