@@ -1,1 +1,1 @@
-fromList []
+AppState { postDB = fromList [], uid = 0 }

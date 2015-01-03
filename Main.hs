@@ -4,6 +4,7 @@
              ViewPatterns #-}
 module Main where
 
+import Text.Read (readMaybe)
 import LDAP
 import Control.Applicative
 import Control.Monad.IO.Class
@@ -48,29 +49,11 @@ data AppState = AppState
   deriving (Show, Read)
 
 -- Set cookie
-{-
-authorize :: W.Request -> IO (OrError ())
-authorize = maybe (return (Left "No Authorization header found")) auth . credentials where
-  auth (Credentials {..}) = handleLDAP (\_ -> return (Left "")) $ do
-    ld <- ldapInit "ldap.uchicago.edu" 636
-    ldapSimpleBind ld ("uid=" ++ username ++ ",ou=people,dc=uchicago,dc=edu") password
-    return (Right ())
-
-  credentials :: W.Request -> Maybe Credentials
-  credentials (W.requestHeaders -> h) =
-    case filter ((== "Authorization") . fst) h of {[v] -> Just (decode v); _ -> Nothing}
-
-  decode = undefined
--}
 
 authorize :: String -> String -> IO (Maybe ())
 authorize cnetId password = handleLDAP (\err -> print err >> return Nothing) $ do
-  print 1
-  ld <- ldapInit "ldap.uchicago.edu" 636
-  -- 389 -- 636
-  print 2
-  ldapSimpleBind ld ("uid=" ++ cnetId ++ ",ou=people,dc=uchicago,dc=edu") password
-  print 3
+  c <- LDAP.ldapInitialize "ldaps://ldap.uchicago.edu:636"
+  ldapSimpleBind c ("uid=" ++ cnetId ++ ",ou=people,dc=uchicago,dc=edu") password
   return (Just ())
 
 bracket l r x = l <> r <> x
@@ -85,7 +68,7 @@ postsForUser (AppState{..}) u = bracket "[" "]" . TL.intercalate "," $ map postT
     kv k v = TL.pack (show k) <> ":" <> TL.pack v
 
 getAppState :: IO AppState
-getAppState = read <$> readFile "posts"
+getAppState = (fromMaybe (error "hi") . readMaybe) <$> readFile "posts"
 
 postsToJSON :: PostDB -> TL.Text
 postsToJSON posts = bracket "[" "]" $ TL.intercalate "," (map postToJSON (M.toList posts)) where
@@ -138,12 +121,20 @@ main = do
         text . TL.decodeUtf8 . Data.Aeson.encode $ SetVote postId v'
 
   scotty 3000 $ do
-    middleware $ staticPolicy (noDots >-> addBase "static")
+    middleware $ staticPolicy (noDots <> addBase "static")
 
     post "/login" $ do
       cnetId   <- param "username"
       password <- param "password"
-      maybe (raise "password no work") return =<< liftIO (authorize cnetId password)
+      liftIO (authorize cnetId password) >>= \case
+        Nothing -> raise "password no work"
+        Just () -> do
+          c <- encryptIO key cnetId
+          setHeader "Set-Cookie" c
+
+    get "/" $ do
+      setHeader "Content-Type" "text/html"
+      file "static/index.html"
 
     get "/posts" $
       text . postsToJSON . postDB =<< liftIO (readMVar appState)

@@ -45,10 +45,10 @@ build-type:          Simple
 -- Constraint on the version of Cabal needed to build this package.
 cabal-version:       >=1.10
 
-
 executable chired
   -- .hs or .lhs file containing the Main module.
   main-is:             Main.hs
+  ghc-options: -with-rtsopts=-V0
   
   -- Modules included in this executable, other than Main.
   -- other-modules:       
@@ -61,6 +61,7 @@ executable chired
                        LDAP >= 0.6.10,
                        aeson >= 0.8,
                        scotty >= 0.9.0,
+                       scotty-tls >= 0.3,
                        containers >= 0.5.5,
                        text >= 1.2.0.3,
                        bytestring >= 0.10,
