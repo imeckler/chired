@@ -46,3 +46,7 @@ ol > li:before {
 body {
   padding : 10px;
 }
+
+.up {
+  margin-left: 2px;
+}
