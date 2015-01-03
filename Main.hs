@@ -180,6 +180,10 @@ main = do
 
     get "/actions/down/:postId" $ vote ClickDown
 
+    get "/logout" $ do
+      setHeader "Set-Cookie" ""
+      redirect "/"
+
   where
   updateVote :: UserAction -> Vote -> Vote
   updateVote ClickUp   Up   = None

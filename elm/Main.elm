@@ -180,19 +180,20 @@ update u s = case u of
 
 -- scene : State -> (Int, Int) -> Element
 scene s (w,h) =
-  let actionButton = case s.cookie of
+  let buttons = case s.cookie of
         Nothing ->
-          Html.a [href "/login.html"] 
-            [Html.button [class "btn btn-default"] [Html.text "Login"]]
+          [ Html.a [href "/login.html"] 
+              [Html.button [class "btn btn-default"] [Html.text "Login"]]]
         Just _  ->
-          Html.a [href "/submit.html"]
-            [Html.button [class "btn btn-default"] [Html.text "Submit post"]]
+          [ Html.a [href "/submit.html"]
+              [Html.button [class "btn btn-default"] [Html.text "Submit post"]]
+          , Html.a [href "/logout"]
+              [Html.button [class "btn btn-default"] [Html.text "Logout"]]
+          ]
   in
   Html.div [class "container"]
   [ Html.div [class "page-header"]
-    [ Html.h1 [] [Html.text "CMSC 22300: Vote"]
-    , actionButton 
-    ]
+      (Html.h1 [] [Html.text "CMSC 22300: Vote"] :: buttons)
   , Html.main' [] [render s]
   ]
   |> Html.toElement w h
