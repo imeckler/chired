@@ -2900,6 +2900,623 @@ Elm.Html.make = function (_elm) {
    return _elm.Html.values;
 };
 Elm.Html = Elm.Html || {};
+Elm.Html.Attributes = Elm.Html.Attributes || {};
+Elm.Html.Attributes.make = function (_elm) {
+   "use strict";
+   _elm.Html = _elm.Html || {};
+   _elm.Html.Attributes = _elm.Html.Attributes || {};
+   if (_elm.Html.Attributes.values)
+   return _elm.Html.Attributes.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   _P = _N.Ports.make(_elm),
+   $moduleName = "Html.Attributes",
+   $Basics = Elm.Basics.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Json$Encode = Elm.Json.Encode.make(_elm),
+   $List = Elm.List.make(_elm),
+   $String = Elm.String.make(_elm),
+   $VirtualDom = Elm.VirtualDom.make(_elm);
+   var property = $VirtualDom.property;
+   var stringProperty = F2(function (name,
+   string) {
+      return A2(property,
+      name,
+      $Json$Encode.string(string));
+   });
+   var $class = function (name) {
+      return A2(stringProperty,
+      "className",
+      name);
+   };
+   var id = function (name) {
+      return A2(stringProperty,
+      "id",
+      name);
+   };
+   var title = function (name) {
+      return A2(stringProperty,
+      "title",
+      name);
+   };
+   var accesskey = function ($char) {
+      return A2(stringProperty,
+      "accesskey",
+      $String.fromList(_L.fromArray([$char])));
+   };
+   var contextmenu = function (value) {
+      return A2(stringProperty,
+      "contextmenu",
+      value);
+   };
+   var dir = function (value) {
+      return A2(stringProperty,
+      "dir",
+      value);
+   };
+   var draggable = function (value) {
+      return A2(stringProperty,
+      "draggable",
+      value);
+   };
+   var dropzone = function (value) {
+      return A2(stringProperty,
+      "dropzone",
+      value);
+   };
+   var itemprop = function (value) {
+      return A2(stringProperty,
+      "itemprop",
+      value);
+   };
+   var lang = function (value) {
+      return A2(stringProperty,
+      "lang",
+      value);
+   };
+   var tabindex = function (n) {
+      return A2(stringProperty,
+      "tabIndex",
+      $Basics.toString(n));
+   };
+   var charset = function (value) {
+      return A2(stringProperty,
+      "charset",
+      value);
+   };
+   var content = function (value) {
+      return A2(stringProperty,
+      "content",
+      value);
+   };
+   var httpEquiv = function (value) {
+      return A2(stringProperty,
+      "httpEquiv",
+      value);
+   };
+   var language = function (value) {
+      return A2(stringProperty,
+      "language",
+      value);
+   };
+   var src = function (value) {
+      return A2(stringProperty,
+      "src",
+      value);
+   };
+   var height = function (value) {
+      return A2(stringProperty,
+      "height",
+      $Basics.toString(value));
+   };
+   var width = function (value) {
+      return A2(stringProperty,
+      "width",
+      $Basics.toString(value));
+   };
+   var alt = function (value) {
+      return A2(stringProperty,
+      "alt",
+      value);
+   };
+   var poster = function (value) {
+      return A2(stringProperty,
+      "poster",
+      value);
+   };
+   var kind = function (value) {
+      return A2(stringProperty,
+      "kind",
+      value);
+   };
+   var srclang = function (value) {
+      return A2(stringProperty,
+      "srclang",
+      value);
+   };
+   var sandbox = function (value) {
+      return A2(stringProperty,
+      "sandbox",
+      value);
+   };
+   var srcdoc = function (value) {
+      return A2(stringProperty,
+      "srcdoc",
+      value);
+   };
+   var type$ = function (value) {
+      return A2(stringProperty,
+      "type",
+      value);
+   };
+   var value = function (value) {
+      return A2(stringProperty,
+      "value",
+      value);
+   };
+   var placeholder = function (value) {
+      return A2(stringProperty,
+      "placeholder",
+      value);
+   };
+   var accept = function (value) {
+      return A2(stringProperty,
+      "accept",
+      value);
+   };
+   var acceptCharset = function (value) {
+      return A2(stringProperty,
+      "acceptCharset",
+      value);
+   };
+   var action = function (value) {
+      return A2(stringProperty,
+      "action",
+      value);
+   };
+   var autocomplete = function (bool) {
+      return A2(stringProperty,
+      "autocomplete",
+      bool ? "on" : "off");
+   };
+   var autosave = function (value) {
+      return A2(stringProperty,
+      "autosave",
+      value);
+   };
+   var enctype = function (value) {
+      return A2(stringProperty,
+      "enctype",
+      value);
+   };
+   var formaction = function (value) {
+      return A2(stringProperty,
+      "formaction",
+      value);
+   };
+   var list = function (value) {
+      return A2(stringProperty,
+      "list",
+      value);
+   };
+   var maxlength = function (n) {
+      return A2(stringProperty,
+      "maxLength",
+      $Basics.toString(n));
+   };
+   var method = function (value) {
+      return A2(stringProperty,
+      "method",
+      value);
+   };
+   var name = function (value) {
+      return A2(stringProperty,
+      "name",
+      value);
+   };
+   var pattern = function (value) {
+      return A2(stringProperty,
+      "pattern",
+      value);
+   };
+   var size = function (n) {
+      return A2(stringProperty,
+      "size",
+      $Basics.toString(n));
+   };
+   var $for = function (value) {
+      return A2(stringProperty,
+      "htmlFor",
+      value);
+   };
+   var form = function (value) {
+      return A2(stringProperty,
+      "form",
+      value);
+   };
+   var max = function (value) {
+      return A2(stringProperty,
+      "max",
+      value);
+   };
+   var min = function (value) {
+      return A2(stringProperty,
+      "min",
+      value);
+   };
+   var step = function (n) {
+      return A2(stringProperty,
+      "step",
+      $Basics.toString(n));
+   };
+   var cols = function (n) {
+      return A2(stringProperty,
+      "cols",
+      $Basics.toString(n));
+   };
+   var rows = function (n) {
+      return A2(stringProperty,
+      "rows",
+      $Basics.toString(n));
+   };
+   var wrap = function (value) {
+      return A2(stringProperty,
+      "wrap",
+      value);
+   };
+   var ismap = function (value) {
+      return A2(stringProperty,
+      "ismap",
+      value);
+   };
+   var usemap = function (value) {
+      return A2(stringProperty,
+      "usemap",
+      value);
+   };
+   var shape = function (value) {
+      return A2(stringProperty,
+      "shape",
+      value);
+   };
+   var coords = function (value) {
+      return A2(stringProperty,
+      "coords",
+      value);
+   };
+   var challenge = function (value) {
+      return A2(stringProperty,
+      "challenge",
+      value);
+   };
+   var keytype = function (value) {
+      return A2(stringProperty,
+      "keytype",
+      value);
+   };
+   var align = function (value) {
+      return A2(stringProperty,
+      "align",
+      value);
+   };
+   var cite = function (value) {
+      return A2(stringProperty,
+      "cite",
+      value);
+   };
+   var href = function (value) {
+      return A2(stringProperty,
+      "href",
+      value);
+   };
+   var target = function (value) {
+      return A2(stringProperty,
+      "target",
+      value);
+   };
+   var downloadAs = function (value) {
+      return A2(stringProperty,
+      "download",
+      value);
+   };
+   var hreflang = function (value) {
+      return A2(stringProperty,
+      "hreflang",
+      value);
+   };
+   var media = function (value) {
+      return A2(stringProperty,
+      "media",
+      value);
+   };
+   var ping = function (value) {
+      return A2(stringProperty,
+      "ping",
+      value);
+   };
+   var rel = function (value) {
+      return A2(stringProperty,
+      "rel",
+      value);
+   };
+   var datetime = function (value) {
+      return A2(stringProperty,
+      "datetime",
+      value);
+   };
+   var pubdate = function (value) {
+      return A2(stringProperty,
+      "pubdate",
+      value);
+   };
+   var start = function (n) {
+      return A2(stringProperty,
+      "start",
+      $Basics.toString(n));
+   };
+   var colspan = function (value) {
+      return A2(stringProperty,
+      "colSpan",
+      value);
+   };
+   var headers = function (value) {
+      return A2(stringProperty,
+      "headers",
+      value);
+   };
+   var rowspan = function (value) {
+      return A2(stringProperty,
+      "rowSpan",
+      value);
+   };
+   var scope = function (value) {
+      return A2(stringProperty,
+      "scope",
+      value);
+   };
+   var manifest = function (value) {
+      return A2(stringProperty,
+      "manifest",
+      value);
+   };
+   var boolProperty = F2(function (name,
+   bool) {
+      return A2(property,
+      name,
+      $Json$Encode.bool(bool));
+   });
+   var hidden = function (bool) {
+      return A2(boolProperty,
+      "hidden",
+      bool);
+   };
+   var contenteditable = function (bool) {
+      return A2(boolProperty,
+      "contentEditable",
+      bool);
+   };
+   var spellcheck = function (bool) {
+      return A2(boolProperty,
+      "spellcheck",
+      bool);
+   };
+   var async = function (bool) {
+      return A2(boolProperty,
+      "async",
+      bool);
+   };
+   var defer = function (bool) {
+      return A2(boolProperty,
+      "defer",
+      bool);
+   };
+   var scoped = function (bool) {
+      return A2(boolProperty,
+      "scoped",
+      bool);
+   };
+   var autoplay = function (bool) {
+      return A2(boolProperty,
+      "autoplay",
+      bool);
+   };
+   var controls = function (bool) {
+      return A2(boolProperty,
+      "controls",
+      bool);
+   };
+   var loop = function (bool) {
+      return A2(boolProperty,
+      "loop",
+      bool);
+   };
+   var preload = function (bool) {
+      return A2(boolProperty,
+      "preload",
+      bool);
+   };
+   var $default = function (bool) {
+      return A2(boolProperty,
+      "default",
+      bool);
+   };
+   var seamless = function (bool) {
+      return A2(boolProperty,
+      "seamless",
+      bool);
+   };
+   var checked = function (bool) {
+      return A2(boolProperty,
+      "checked",
+      bool);
+   };
+   var selected = function (bool) {
+      return A2(boolProperty,
+      "selected",
+      bool);
+   };
+   var autofocus = function (bool) {
+      return A2(boolProperty,
+      "autofocus",
+      bool);
+   };
+   var disabled = function (bool) {
+      return A2(boolProperty,
+      "disabled",
+      bool);
+   };
+   var multiple = function (bool) {
+      return A2(boolProperty,
+      "multiple",
+      bool);
+   };
+   var novalidate = function (bool) {
+      return A2(boolProperty,
+      "novalidate",
+      bool);
+   };
+   var readonly = function (bool) {
+      return A2(boolProperty,
+      "readonly",
+      bool);
+   };
+   var required = function (bool) {
+      return A2(boolProperty,
+      "required",
+      bool);
+   };
+   var download = function (bool) {
+      return A2(boolProperty,
+      "download",
+      bool);
+   };
+   var reversed = function (bool) {
+      return A2(boolProperty,
+      "reversed",
+      bool);
+   };
+   var style = function (props) {
+      return property("style")($Json$Encode.object($List.map(function (_v0) {
+         return function () {
+            switch (_v0.ctor)
+            {case "_Tuple2":
+               return {ctor: "_Tuple2"
+                      ,_0: _v0._0
+                      ,_1: $Json$Encode.string(_v0._1)};}
+            _U.badCase($moduleName,
+            "on line 136, column 35 to 57");
+         }();
+      })(props)));
+   };
+   var key = function (k) {
+      return A2(stringProperty,
+      "key",
+      k);
+   };
+   _elm.Html.Attributes.values = {_op: _op
+                                 ,key: key
+                                 ,style: style
+                                 ,property: property
+                                 ,stringProperty: stringProperty
+                                 ,boolProperty: boolProperty
+                                 ,$class: $class
+                                 ,hidden: hidden
+                                 ,id: id
+                                 ,title: title
+                                 ,accesskey: accesskey
+                                 ,contenteditable: contenteditable
+                                 ,contextmenu: contextmenu
+                                 ,dir: dir
+                                 ,draggable: draggable
+                                 ,dropzone: dropzone
+                                 ,itemprop: itemprop
+                                 ,lang: lang
+                                 ,spellcheck: spellcheck
+                                 ,tabindex: tabindex
+                                 ,async: async
+                                 ,charset: charset
+                                 ,content: content
+                                 ,defer: defer
+                                 ,httpEquiv: httpEquiv
+                                 ,language: language
+                                 ,scoped: scoped
+                                 ,src: src
+                                 ,height: height
+                                 ,width: width
+                                 ,alt: alt
+                                 ,autoplay: autoplay
+                                 ,controls: controls
+                                 ,loop: loop
+                                 ,preload: preload
+                                 ,poster: poster
+                                 ,$default: $default
+                                 ,kind: kind
+                                 ,srclang: srclang
+                                 ,sandbox: sandbox
+                                 ,seamless: seamless
+                                 ,srcdoc: srcdoc
+                                 ,type$: type$
+                                 ,value: value
+                                 ,checked: checked
+                                 ,placeholder: placeholder
+                                 ,selected: selected
+                                 ,accept: accept
+                                 ,acceptCharset: acceptCharset
+                                 ,action: action
+                                 ,autocomplete: autocomplete
+                                 ,autofocus: autofocus
+                                 ,autosave: autosave
+                                 ,disabled: disabled
+                                 ,enctype: enctype
+                                 ,formaction: formaction
+                                 ,list: list
+                                 ,maxlength: maxlength
+                                 ,method: method
+                                 ,multiple: multiple
+                                 ,name: name
+                                 ,novalidate: novalidate
+                                 ,pattern: pattern
+                                 ,readonly: readonly
+                                 ,required: required
+                                 ,size: size
+                                 ,$for: $for
+                                 ,form: form
+                                 ,max: max
+                                 ,min: min
+                                 ,step: step
+                                 ,cols: cols
+                                 ,rows: rows
+                                 ,wrap: wrap
+                                 ,ismap: ismap
+                                 ,usemap: usemap
+                                 ,shape: shape
+                                 ,coords: coords
+                                 ,challenge: challenge
+                                 ,keytype: keytype
+                                 ,align: align
+                                 ,cite: cite
+                                 ,href: href
+                                 ,target: target
+                                 ,download: download
+                                 ,downloadAs: downloadAs
+                                 ,hreflang: hreflang
+                                 ,media: media
+                                 ,ping: ping
+                                 ,rel: rel
+                                 ,datetime: datetime
+                                 ,pubdate: pubdate
+                                 ,reversed: reversed
+                                 ,start: start
+                                 ,colspan: colspan
+                                 ,headers: headers
+                                 ,rowspan: rowspan
+                                 ,scope: scope
+                                 ,manifest: manifest};
+   return _elm.Html.Attributes.values;
+};
+Elm.Html = Elm.Html || {};
 Elm.Html.Events = Elm.Html.Events || {};
 Elm.Html.Events.make = function (_elm) {
    "use strict";
@@ -3439,9 +4056,9 @@ Elm.Main.make = function (_elm) {
    _P = _N.Ports.make(_elm),
    $moduleName = "Main",
    $Basics = Elm.Basics.make(_elm),
-   $Debug = Elm.Debug.make(_elm),
    $Dict = Elm.Dict.make(_elm),
    $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $Html$Events = Elm.Html.Events.make(_elm),
    $Http = Elm.Http.make(_elm),
    $Json$Decode = Elm.Json.Decode.make(_elm),
@@ -3450,11 +4067,20 @@ Elm.Main.make = function (_elm) {
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $Window = Elm.Window.make(_elm);
+   var voteToInt = function (v) {
+      return function () {
+         switch (v.ctor)
+         {case "Down": return -1;
+            case "None": return 0;
+            case "Up": return 1;}
+         _U.badCase($moduleName,
+         "between lines 160 and 163");
+      }();
+   };
    var update = F2(function (u,s) {
       return function () {
          switch (u.ctor)
-         {case "Error":
-            return A2($Debug.log,u._0,s);
+         {case "Error": return s;
             case "SetDB":
             return _U.replace([["postDB"
                                ,u._0]],
@@ -3465,15 +4091,29 @@ Elm.Main.make = function (_elm) {
                                u._0,
                                $Maybe.map(function (p) {
                                   return _U.replace([["vote"
-                                                     ,u._1]],
+                                                     ,u._1]
+                                                    ,["score"
+                                                     ,p.score - voteToInt(p.vote) + voteToInt(u._1)]],
                                   p);
                                }),
                                s.postDB)]],
               s);}
          _U.badCase($moduleName,
-         "between lines 107 and 113");
+         "between lines 166 and 175");
       }();
    });
+   var renderContent = function (c) {
+      return function () {
+         switch (c.ctor)
+         {case "Link": return A2($Html.a,
+              _L.fromArray([$Html$Attributes.href(c._0.url)]),
+              _L.fromArray([$Html.text(c._0.text)]));
+            case "Text":
+            return $Html.text(c._0);}
+         _U.badCase($moduleName,
+         "between lines 148 and 150");
+      }();
+   };
    var Error = function (a) {
       return {ctor: "Error",_0: a};
    };
@@ -3496,77 +4136,27 @@ Elm.Main.make = function (_elm) {
    };
    var NoOp = {ctor: "NoOp"};
    var actions = $Signal.channel(NoOp);
-   var voteButtons = function (p) {
-      return function () {
-         var voteButton = F2(function (f,
-         s) {
-            return A2($Html.button,
-            _L.fromArray([$Html$Events.onClick(A2($Signal.send,
-            actions,
-            f(p.idNum)))]),
-            _L.fromArray([$Html.text(p.title)]));
-         });
-         var upVote = A2(voteButton,
-         ClickUp,
-         "+");
-         var downVote = A2(voteButton,
-         ClickDown,
-         "-");
-         return A2($Html.div,
-         _L.fromArray([]),
-         _L.fromArray([upVote
-                      ,downVote]));
-      }();
-   };
-   var renderPost = function (p) {
-      return A2($Html.li,
-      _L.fromArray([]),
-      _L.fromArray([$Html.text(A2($Basics._op["++"],
-                   p.title,
-                   A2($Basics._op["++"],
-                   ", ",
-                   $Basics.toString(p.score))))
-                   ,voteButtons(p)]));
-   };
-   var render = function ($) {
-      return $Html.ol(_L.fromArray([]))($List.map(renderPost)($List.sortBy(function (_) {
-         return _.score;
-      })($Dict.values(function (_) {
-         return _.postDB;
-      }($)))));
-   };
-   var scene = F2(function (s,
-   _v5) {
-      return function () {
-         switch (_v5.ctor)
-         {case "_Tuple2":
-            return A2($Html.toElement,
-              _v5._0,
-              _v5._1)(A2($Html.body,
-              _L.fromArray([]),
-              _L.fromArray([A2($Html.h1,
-                           _L.fromArray([]),
-                           _L.fromArray([$Html.text("Vote")]))
-                           ,A2($Html.main$,
-                           _L.fromArray([]),
-                           _L.fromArray([render(s)]))])));}
-         _U.badCase($moduleName,
-         "between lines 117 and 121");
-      }();
-   });
    var State = function (a) {
       return {_: {},postDB: a};
    };
-   var Post = F4(function (a,
+   var Post = F5(function (a,
    b,
    c,
-   d) {
+   d,
+   e) {
       return {_: {}
+             ,content: e
              ,idNum: d
              ,score: b
              ,title: a
              ,vote: c};
    });
+   var Link = function (a) {
+      return {ctor: "Link",_0: a};
+   };
+   var Text = function (a) {
+      return {ctor: "Text",_0: a};
+   };
    var None = {ctor: "None"};
    var Down = {ctor: "Down"};
    var Up = {ctor: "Up"};
@@ -3578,42 +4168,64 @@ Elm.Main.make = function (_elm) {
          return None;
       }();
    };
-   var postJson = A5($Json$Decode.object4,
-   F4(function (t,s,n,v) {
-      return {_: {}
-             ,idNum: n
-             ,score: s
-             ,title: t
-             ,vote: v};
-   }),
-   A2($Json$Decode._op[":="],
-   "title",
-   $Json$Decode.string),
-   A2($Json$Decode._op[":="],
-   "score",
-   $Json$Decode.$int),
-   A2($Json$Decode._op[":="],
-   "idNum",
-   $Json$Decode.$int),
-   A2($Json$Decode._op[":="],
-   "vote",
-   A2($Json$Decode.map,
-   parseVote,
-   $Json$Decode.string)));
+   var postJson = function () {
+      var postContentChunkJson = $Json$Decode.oneOf(_L.fromArray([A2($Json$Decode.map,
+                                                                 Text,
+                                                                 $Json$Decode.string)
+                                                                 ,A3($Json$Decode.object2,
+                                                                 F2(function (t,
+                                                                 u) {
+                                                                    return Link({_: {}
+                                                                                ,text: t
+                                                                                ,url: u});
+                                                                 }),
+                                                                 A2($Json$Decode._op[":="],
+                                                                 "text",
+                                                                 $Json$Decode.string),
+                                                                 A2($Json$Decode._op[":="],
+                                                                 "url",
+                                                                 $Json$Decode.string))]));
+      return A6($Json$Decode.object5,
+      F5(function (t,c,s,n,v) {
+         return {_: {}
+                ,content: c
+                ,idNum: n
+                ,score: s
+                ,title: t
+                ,vote: v};
+      }),
+      A2($Json$Decode._op[":="],
+      "title",
+      $Json$Decode.string),
+      A2($Json$Decode._op[":="],
+      "content",
+      $Json$Decode.list(postContentChunkJson)),
+      A2($Json$Decode._op[":="],
+      "score",
+      $Json$Decode.$int),
+      A2($Json$Decode._op[":="],
+      "idNum",
+      $Json$Decode.$int),
+      A2($Json$Decode._op[":="],
+      "vote",
+      A2($Json$Decode.map,
+      parseVote,
+      $Json$Decode.string)));
+   }();
    var updateJson = $Json$Decode.oneOf(_L.fromArray([A3($Json$Decode.object2,
-                                                    F2(function (idNum,v) {
+                                                    F2(function (v,idNum) {
                                                        return A2(SetVote,
                                                        idNum,
                                                        v);
                                                     }),
                                                     A2($Json$Decode._op[":="],
-                                                    "idNum",
-                                                    $Json$Decode.$int),
-                                                    A2($Json$Decode._op[":="],
                                                     "vote",
                                                     A2($Json$Decode.map,
                                                     parseVote,
-                                                    $Json$Decode.string)))
+                                                    $Json$Decode.string)),
+                                                    A2($Json$Decode._op[":="],
+                                                    "idNum",
+                                                    $Json$Decode.$int))
                                                     ,A2($Json$Decode.map,
                                                     function ($) {
                                                        return SetDB($Dict.fromList($List.map(function (p) {
@@ -3631,7 +4243,7 @@ Elm.Main.make = function (_elm) {
                return Error(ex._0);
                case "Ok": return ex._0;}
             _U.badCase($moduleName,
-            "between lines 68 and 71");
+            "between lines 87 and 90");
          }();
       };
       var decode = function (r) {
@@ -3646,7 +4258,7 @@ Elm.Main.make = function (_elm) {
                case "Waiting":
                return $Result.Err("Waiting");}
             _U.badCase($moduleName,
-            "between lines 63 and 67");
+            "between lines 82 and 86");
          }();
       };
       return function ($) {
@@ -3660,16 +4272,16 @@ Elm.Main.make = function (_elm) {
             switch (a.ctor)
             {case "ClickDown":
                return $Http.get(A2($Basics._op["++"],
-                 "/down/",
+                 "/actions/down/",
                  $Basics.toString(a._0)));
                case "ClickUp":
                return $Http.get(A2($Basics._op["++"],
-                 "/up/",
+                 "/actions/up/",
                  $Basics.toString(a._0)));
                case "NoOp":
-               return $Http.get("/noop");}
+               return $Http.get("/actions/noop");}
             _U.badCase($moduleName,
-            "between lines 83 and 87");
+            "between lines 102 and 106");
          }();
       };
       return $Signal.merge(postDBUpdates)($Signal.map(decodeUpdate)($Http.send(A2($Signal.map,
@@ -3680,6 +4292,97 @@ Elm.Main.make = function (_elm) {
    update,
    {_: {},postDB: $Dict.empty},
    updates);
+   var voteButtons = function (p) {
+      return function () {
+         var downVote = A2($Html.span,
+         _L.fromArray([$Html$Events.onClick(A2($Signal.send,
+                      actions,
+                      ClickDown(p.idNum)))
+                      ,$Html$Attributes.$class(A2($Basics._op["++"],
+                      "glyphicon glyphicon-chevron-down ",
+                      _U.eq(p.vote,
+                      Down) ? "down-active" : "down-inactive"))]),
+         _L.fromArray([]));
+         var upVote = A2($Html.span,
+         _L.fromArray([$Html$Events.onClick(A2($Signal.send,
+                      actions,
+                      ClickUp(p.idNum)))
+                      ,$Html$Attributes.$class(A2($Basics._op["++"],
+                      "glyphicon glyphicon-chevron-up ",
+                      _U.eq(p.vote,
+                      Up) ? "up-active" : "up-inactive"))]),
+         _L.fromArray([]));
+         var voteButton = F2(function (f,
+         s) {
+            return A2($Html.button,
+            _L.fromArray([$Html$Events.onClick(A2($Signal.send,
+            actions,
+            f(p.idNum)))]),
+            _L.fromArray([$Html.text(s)]));
+         });
+         return A2($Html.div,
+         _L.fromArray([$Html$Attributes.$class("vote-buttons")]),
+         _L.fromArray([A2($Html.div,
+                      _L.fromArray([$Html$Attributes.$class("votebutton up")]),
+                      _L.fromArray([upVote]))
+                      ,A2($Html.div,
+                      _L.fromArray([]),
+                      _L.fromArray([$Html.text($Basics.toString(p.score))]))
+                      ,A2($Html.div,
+                      _L.fromArray([$Html$Attributes.$class("votebutton down")]),
+                      _L.fromArray([downVote]))]));
+      }();
+   };
+   var renderPost = function (p) {
+      return A2($Html.li,
+      _L.fromArray([]),
+      _L.fromArray([voteButtons(p)
+                   ,A2($Html.div,
+                   _L.fromArray([$Html$Attributes.$class("post-container")]),
+                   _L.fromArray([A2($Html.p,
+                                _L.fromArray([$Html$Attributes.$class("post-title")]),
+                                _L.fromArray([$Html.text(p.title)]))
+                                ,A2($Html.div,
+                                _L.fromArray([$Html$Attributes.$class("well well-sm")]),
+                                A2($List.map,
+                                renderContent,
+                                p.content))]))]));
+   };
+   var render = function () {
+      var negate = function (x) {
+         return 0 - x;
+      };
+      return function ($) {
+         return $Html.ol(_L.fromArray([]))($List.map(renderPost)($List.sortBy(function ($) {
+            return negate(function (_) {
+               return _.score;
+            }($));
+         })($Dict.values(function (_) {
+            return _.postDB;
+         }($)))));
+      };
+   }();
+   var scene = F2(function (s,
+   _v20) {
+      return function () {
+         switch (_v20.ctor)
+         {case "_Tuple2":
+            return A2($Html.toElement,
+              _v20._0,
+              _v20._1)(A2($Html.body,
+              _L.fromArray([]),
+              _L.fromArray([A2($Html.div,
+                           _L.fromArray([$Html$Attributes.$class("page-header")]),
+                           _L.fromArray([A2($Html.h1,
+                           _L.fromArray([]),
+                           _L.fromArray([$Html.text("CMSC 22300: Vote")]))]))
+                           ,A2($Html.main$,
+                           _L.fromArray([]),
+                           _L.fromArray([render(s)]))])));}
+         _U.badCase($moduleName,
+         "between lines 179 and 183");
+      }();
+   });
    var main = A3($Signal.map2,
    scene,
    state,
@@ -3688,6 +4391,8 @@ Elm.Main.make = function (_elm) {
                       ,Up: Up
                       ,Down: Down
                       ,None: None
+                      ,Text: Text
+                      ,Link: Link
                       ,Post: Post
                       ,State: State
                       ,NoOp: NoOp
@@ -3705,7 +4410,9 @@ Elm.Main.make = function (_elm) {
                       ,updates: updates
                       ,render: render
                       ,voteButtons: voteButtons
+                      ,renderContent: renderContent
                       ,renderPost: renderPost
+                      ,voteToInt: voteToInt
                       ,update: update
                       ,scene: scene
                       ,state: state

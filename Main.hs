@@ -1,9 +1,11 @@
 {-# LANGUAGE RecordWildCards,
              OverloadedStrings,
+             LambdaCase,
              NamedFieldPuns,
              ViewPatterns #-}
 module Main where
 
+import Control.Monad (void)
 import Text.Read (readMaybe)
 import LDAP
 import Control.Applicative
@@ -11,9 +13,13 @@ import Control.Monad.IO.Class
 import Control.Concurrent.MVar
 import qualified Data.Map as M
 import qualified Data.Text.Lazy as TL
+import qualified Data.Text.Lazy as TL
+import qualified Data.Text.Lazy.IO as TL
 import qualified Data.Text.Lazy.Encoding as TL
 import qualified Data.Text.Encoding as T
 import qualified Data.ByteString as B
+import qualified Data.ByteString.Char8 as BC8
+import qualified Data.ByteString.Lazy as BL
 import Data.Monoid
 import Data.Aeson
 import Data.Maybe
@@ -21,25 +27,12 @@ import Web.Scotty
 import Web.ClientSession
 import qualified Network.Wai as W
 import Network.Wai.Middleware.Static
+import System.Posix.Signals
+import Types
 
-data Credentials = Credentials { username :: String, password :: String}
 type OrError = Either String
 
-data Vote = Down | None | Up
-  deriving (Show, Read, Eq)
-
 voteToInt v = case v of { Up -> 1; None -> 0; Down -> -1 }
-
-type ID = Int
-type Username = TL.Text
-data Post = Post
-  { poster  :: Username
-  , votes   :: M.Map Username Vote
-  , idNum   :: ID
-  , title   :: TL.Text
-  , content :: TL.Text
-  }
-  deriving (Show, Read)
 
 type PostDB = M.Map ID Post
 data AppState = AppState
@@ -56,29 +49,50 @@ authorize cnetId password = handleLDAP (\err -> print err >> return Nothing) $ d
   ldapSimpleBind c ("uid=" ++ cnetId ++ ",ou=people,dc=uchicago,dc=edu") password
   return (Just ())
 
-bracket l r x = l <> r <> x
+bracket l r x = l <> x <> r
 
-postsForUser :: AppState -> Username -> TL.Text
-postsForUser (AppState{..}) u = bracket "[" "]" . TL.intercalate "," $ map postToJSON (M.elems postDB) where
-  postToJSON (Post{..}) = bracket "{" "}" $
-    TL.intercalate "," [kv "vote" (show vote), kv "title" (show title), kv "score" (show score)]
+postsForUser :: Username -> AppState -> TL.Text
+postsForUser u (AppState{..}) = jsonList postToJSON (M.elems postDB) where
+  jsonList f = bracket "[" "]" . TL.intercalate "," . map f
+
+  contentToJson (PostContent cs) = jsonList chunkToJson cs
+
+  chunkToJson c = case c of
+    Text t     -> TL.pack (show t)
+    Link t url -> jsonObj [kv "text" (TL.pack $ show t), kv "url" (TL.pack $ show url)]
+
+  jsonObj = bracket "{" "}" . TL.intercalate ","
+
+  postToJSON (Post{..}) = jsonObj $
+      [ kv "vote" vote
+      , kv "title" (TL.pack $ show title)
+      , kv "score" score
+      , kv "idNum" (TL.pack $ show idNum)
+      , kv "content" (contentToJson content)
+      ]
     where
-    vote   = fromMaybe None (M.lookup u votes)
-    score  = sum . map voteToInt $ M.elems votes
-    kv k v = TL.pack (show k) <> ":" <> TL.pack v
+    vote   = TL.pack . show . show $ fromMaybe None (M.lookup u votes)
+    score  = TL.pack . show . sum . map voteToInt $ M.elems votes
+
+  kv k v = TL.pack (show k) <> ":" <> v
 
 getAppState :: IO AppState
-getAppState = (fromMaybe (error "hi") . readMaybe) <$> readFile "posts"
+getAppState =
+  (readMaybe <$> readFile "posts") >>= \case
+    Nothing -> error "Bad serialized AppState" -- >> return defaultState
+    Just x  -> return x
+  where defaultState = AppState { postDB = M.empty, uid = 0 }
 
+{-
 postsToJSON :: PostDB -> TL.Text
-postsToJSON posts = bracket "[" "]" $ TL.intercalate "," (map postToJSON (M.toList posts)) where
+postsToJSON posts = bracket "[" "]" $ TL.intercalate "," (map postToJSON (M.elems posts)) where
   postToJSON (t, s) = bracket "{" "}" $
     "\"title\":" <> TL.pack (show t) <> ",\"score\":" <> TL.pack (show s)
-
+-}
 newPost appState poster title content = do
-  AppState {..} <- readMVar appState
-  let post = Post {poster, title, content, votes = M.empty, idNum = uid}
-  putMVar appState (AppState {uid = uid + 1, postDB = M.insert uid post postDB})
+  modifyMVar_ appState $ \(AppState {..}) -> do
+    let post = Post {poster, title, content, votes = M.empty, idNum = uid}
+    return $ AppState {uid = uid + 1, postDB = M.insert uid post postDB}
   print =<< readMVar appState
 
 errorPage = raise "Bad cookie"
@@ -104,10 +118,15 @@ instance ToJSON Vote where
 instance ToJSON Update where
   toJSON (SetVote idNum v) = object ["idNum" .= idNum, "vote" .=  v]
 
+writePosts appState = writeFile "posts" . show =<< readMVar appState
+
 main :: IO ()
 main = do
   appState <- newMVar =<< getAppState
   key <- getDefaultKey
+
+  void $ installHandler keyboardSignal 
+    (Catch (writePosts appState)) Nothing
 
   let vote dir = do
         postId <- param "postId"
@@ -118,7 +137,9 @@ main = do
               db' = M.alter (fmap (\p -> p { votes = M.insert user v' (votes p)})) postId postDB
           in
           return (s {postDB = db'}, v')
-        text . TL.decodeUtf8 . Data.Aeson.encode $ SetVote postId v'
+        let txt = Data.Aeson.encode $ SetVote postId v'
+        liftIO $ print txt
+        text $ TL.decodeUtf8 txt
 
   scotty 3000 $ do
     middleware $ staticPolicy (noDots <> addBase "static")
@@ -129,15 +150,21 @@ main = do
       liftIO (authorize cnetId password) >>= \case
         Nothing -> raise "password no work"
         Just () -> do
-          c <- encryptIO key cnetId
-          setHeader "Set-Cookie" c
+          c <- liftIO $ encryptIO key (BC8.pack cnetId)
+          setHeader "Set-Cookie" (TL.decodeUtf8 $ BL.fromStrict c)
+          redirect "/"
 
     get "/" $ do
       setHeader "Content-Type" "text/html"
       file "static/index.html"
 
-    get "/posts" $
-      text . postsToJSON . postDB =<< liftIO (readMVar appState)
+    get "/posts" $ do
+      setHeader "Access-Control-Allow-Origin" "*"
+      user <- loggedInUserErr key
+      ps <- liftIO (postsForUser user <$> readMVar appState)
+      liftIO (print =<< readMVar appState)
+      liftIO (TL.putStrLn ps)
+      text ps
 
     get "/newpost" $ do
       title     <- param "title"

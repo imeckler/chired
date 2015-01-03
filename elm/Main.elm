@@ -4,6 +4,7 @@ import Util(..)
 import Window
 import Http
 import Html
+import Html.Attributes (class, href)
 import Html.Events
 import Signal
 import List
@@ -18,7 +19,16 @@ import Debug
 -- Model
 type alias ID    = Int
 type Vote        = Up | Down | None
-type alias Post  = {title : String, score : Int, vote : Vote, idNum : ID}
+
+type PostContentChunk = Text String | Link { text : String, url : String }
+
+type alias Post  =
+  { title : String
+  , score : Int
+  , vote : Vote
+  , idNum : ID
+  , content : List PostContentChunk
+  }
 type alias State =
   { postDB : Dict.Dict Int Post
   }
@@ -42,17 +52,26 @@ parseVote s = case s of
   _      -> None
 
 postJson =
-  Json.Decode.object4 (\t s n v -> {title = t, score = s, idNum = n, vote = v})
+  let postContentChunkJson =
+        Json.Decode.oneOf
+        [ Json.Decode.map Text Json.Decode.string
+        , Json.Decode.object2 (\t u -> Link {text = t, url = u})
+            ("text" := Json.Decode.string)
+            ("url"  := Json.Decode.string)
+        ]
+  in
+  Json.Decode.object5 (\t c s n v -> {title = t, content = c, score = s, idNum = n, vote = v})
     ("title" := Json.Decode.string)
+    ("content" := Json.Decode.list postContentChunkJson)
     ("score" := Json.Decode.int)
     ("idNum" := Json.Decode.int)
     ("vote"  := Json.Decode.map parseVote Json.Decode.string)
 
 updateJson =
   Json.Decode.oneOf
-  [ Json.Decode.object2 (\idNum v -> SetVote idNum v)
-      ("idNum" := Json.Decode.int)
+  [ Json.Decode.object2 (\v idNum -> SetVote idNum v)
       ("vote"  := Json.Decode.map parseVote Json.Decode.string)
+      ("idNum" := Json.Decode.int)
   , Json.Decode.map (SetDB << Dict.fromList << List.map (\p -> (p.idNum, p)))
       (Json.Decode.list postJson)
   ]
@@ -91,31 +110,74 @@ updates =
 
 -- Display
 render : State -> Html.Html
-render = Html.ol [] << List.map renderPost << List.sortBy .score << Dict.values << .postDB
+render =
+  let negate x = -x in
+  Html.ol []
+  << List.map renderPost
+  << List.sortBy (negate << .score)
+  << Dict.values
+  << .postDB
 
 voteButtons : Post -> Html.Html
 voteButtons p =
-  let voteButton f s = Html.button [Html.Events.onClick (Signal.send actions (f p.idNum))] [Html.text p.title]
-      upVote         = voteButton ClickUp "+"
-      downVote       = voteButton ClickDown "-"
+  let voteButton f s =
+    Html.button [Html.Events.onClick (Signal.send actions (f p.idNum))] [Html.text s]
+      upVote =
+        Html.span
+        [ Html.Events.onClick (Signal.send actions (ClickUp p.idNum))
+        , class 
+          ("glyphicon glyphicon-chevron-up " 
+            ++ if p.vote == Up then "up-active" else "up-inactive")
+        ]
+        []
+      downVote = 
+        Html.span
+        [ Html.Events.onClick (Signal.send actions (ClickDown p.idNum))
+        , class 
+          ("glyphicon glyphicon-chevron-down "
+           ++ if p.vote == Down then "down-active" else "down-inactive")
+        ]
+        []
   in
-  Html.div [] [upVote, downVote]
+  Html.div [class "vote-buttons"]
+  [ Html.div [class "votebutton up"] [upVote]
+  , Html.div [] [Html.text (toString p.score)]
+  , Html.div [class "votebutton down"] [downVote]
+  ]
 
-renderPost p = Html.li [] [Html.text (p.title ++ ", " ++ toString p.score), voteButtons p]
+renderContent c = case c of
+  Text t           -> Html.text t
+  Link {text, url} -> Html.a [href url] [Html.text text]
+
+renderPost p = Html.li []
+  [ voteButtons p
+  , Html.div [class "post-container"] 
+    [ Html.p [class "post-title"] [Html.text p.title]
+    , Html.div [class "well well-sm"] (List.map renderContent p.content)
+    ]
+  ]
+
+voteToInt v = case v of
+  None -> 0
+  Up -> 1
+  Down -> -1
 
 update : Update -> State -> State
 update u s = case u of
   SetVote idNum v ->
-    {s | postDB <- Dict.update idNum (Maybe.map (\p -> {p | vote <- v})) s.postDB}
+    {s | postDB <- Dict.update idNum
+      (Maybe.map (\p -> 
+        {p | vote <- v, score <- p.score - voteToInt p.vote + voteToInt v}))
+      s.postDB}
 
   SetDB db -> {s | postDB <- db}
 
-  Error e -> Debug.log e s
+  Error e -> s -- Debug.log e s
 
 -- scene : State -> (Int, Int) -> Element
 scene s (w,h) =
   Html.body []
-  [ Html.h1 [] [Html.text "Vote"]
+  [ Html.div [class "page-header"] [Html.h1 [] [Html.text "CMSC 22300: Vote"]]
   , Html.main' [] [render s]
   ]
   |> Html.toElement w h

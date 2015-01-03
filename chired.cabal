@@ -64,10 +64,12 @@ executable chired
                        scotty-tls >= 0.3,
                        containers >= 0.5.5,
                        text >= 1.2.0.3,
+                       parsec >= 3.1.7,
                        bytestring >= 0.10,
                        transformers >= 0.4.2,
                        wai >= 3,
                        clientsession >= 0.9,
+                       unix >= 2.7,
                        wai-middleware-static >= 0.6
   
   -- Directories containing source files.

@@ -1,0 +1,48 @@
+.up-active {
+  color: #11BDBD;
+}
+
+.down-active {
+  color: #E48428;
+}
+
+.vote-buttons {
+  display: inline-block;
+  text-align: center;
+}
+
+.post-container {
+  display : inline-block;
+  margin-left: 20px;
+  vertical-align:top;
+  width: 80%;
+}
+
+ol {
+  counter-reset:li;
+  list-style:none;
+  padding-left:0px;
+}
+
+ol > li:before {
+  font-weight: bold;
+  font-size: 30px;
+  content: counter(li);
+  counter-increment:li;
+  margin-right:20px;
+}
+
+.post-title {
+  display : inline-block;
+  font-size: 16pt;
+  font-weight: bold;
+}
+
+.votebutton {
+  cursor: pointer;
+  font-size:14pt;
+}
+
+body {
+  padding : 10px;
+}
