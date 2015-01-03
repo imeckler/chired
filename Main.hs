@@ -24,11 +24,13 @@ import Data.Monoid
 import Data.Aeson
 import Data.Maybe
 import Web.Scotty
+import Web.Scotty.Cookie
 import Web.ClientSession
 import qualified Network.Wai as W
 import Network.Wai.Middleware.Static
 import System.Posix.Signals
 import Types
+import System.Environment (getArgs)
 
 type OrError = Either String
 
@@ -98,11 +100,11 @@ newPost appState poster title content = do
 errorPage = raise "Bad cookie"
 
 loggedInUser key = do
-  cookieMay <- header "cookie"
+  uStrMay <- getCookie "user"
   return $ do
-    c <- cookieMay
+    u <- uStrMay
     fmap (TL.fromStrict . T.decodeUtf8) $
-      decrypt key (T.encodeUtf8 $ TL.toStrict c)
+      decrypt key (T.encodeUtf8 u)
 
 loggedInUserErr key = maybe errorPage return =<< loggedInUser key
 
@@ -122,7 +124,12 @@ writePosts appState = writeFile "posts" . show =<< readMVar appState
 
 main :: IO ()
 main = do
+  port <- getArgs >>= \case
+    [p] -> return (read p)
+    _   -> error "Please provide the port number as the first and only argument."
+
   appState <- newMVar =<< getAppState
+
   key <- getDefaultKey
 
   void $ installHandler keyboardSignal 
@@ -137,21 +144,20 @@ main = do
               db' = M.alter (fmap (\p -> p { votes = M.insert user v' (votes p)})) postId postDB
           in
           return (s {postDB = db'}, v')
-        let txt = Data.Aeson.encode $ SetVote postId v'
-        liftIO $ print txt
-        text $ TL.decodeUtf8 txt
+        text . TL.decodeUtf8 . Data.Aeson.encode $ SetVote postId v'
 
-  scotty 80 $ do
+  scotty port $ do
     middleware $ staticPolicy (noDots <> addBase "static")
 
     post "/login" $ do
       cnetId   <- param "username"
       password <- param "password"
+
       liftIO (authorize cnetId password) >>= \case
         Nothing -> raise "password no work"
         Just () -> do
           c <- liftIO $ encryptIO key (BC8.pack cnetId)
-          setHeader "Set-Cookie" (TL.decodeUtf8 $ BL.fromStrict c)
+          setSimpleCookie "user" (T.decodeUtf8 c)
           redirect "/"
 
     get "/" $ do
@@ -181,7 +187,7 @@ main = do
     get "/actions/down/:postId" $ vote ClickDown
 
     get "/logout" $ do
-      setHeader "Set-Cookie" ""
+      setSimpleCookie "user" ""
       redirect "/"
 
   where
