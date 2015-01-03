@@ -170,7 +170,6 @@ main = do
     get "/newpost" $ do
       title     <- param "title"
       content   <- param "content"
-      cookieMay <- header "cookie"
       poster    <- loggedInUserErr key
       liftIO $ newPost appState poster title content
       redirect "/"
