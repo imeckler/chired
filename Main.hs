@@ -141,7 +141,7 @@ main = do
         liftIO $ print txt
         text $ TL.decodeUtf8 txt
 
-  scotty 3000 $ do
+  scotty 80 $ do
     middleware $ staticPolicy (noDots <> addBase "static")
 
     post "/login" $ do
@@ -155,6 +155,7 @@ main = do
           redirect "/"
 
     get "/" $ do
+      liftIO $ print "hi"
       setHeader "Content-Type" "text/html"
       file "static/index.html"
 
