@@ -4074,7 +4074,7 @@ Elm.Main.make = function (_elm) {
             case "None": return 0;
             case "Up": return 1;}
          _U.badCase($moduleName,
-         "between lines 160 and 163");
+         "between lines 164 and 167");
       }();
    };
    var update = F2(function (u,s) {
@@ -4099,7 +4099,7 @@ Elm.Main.make = function (_elm) {
                                s.postDB)]],
               s);}
          _U.badCase($moduleName,
-         "between lines 166 and 175");
+         "between lines 170 and 179");
       }();
    });
    var renderContent = function (c) {
@@ -4111,7 +4111,7 @@ Elm.Main.make = function (_elm) {
             case "Text":
             return $Html.text(c._0);}
          _U.badCase($moduleName,
-         "between lines 148 and 150");
+         "between lines 152 and 154");
       }();
    };
    var Error = function (a) {
@@ -4136,9 +4136,16 @@ Elm.Main.make = function (_elm) {
    };
    var NoOp = {ctor: "NoOp"};
    var actions = $Signal.channel(NoOp);
-   var State = function (a) {
-      return {_: {},postDB: a};
-   };
+   var cookie = _P.portIn("cookie",
+   _P.incomingSignal(function (v) {
+      return v === null ? Elm.Maybe.make(_elm).Nothing : Elm.Maybe.make(_elm).Just(typeof v === "string" || typeof v === "object" && v instanceof String ? v : _U.badPort("a string",
+      v));
+   }));
+   var State = F2(function (a,b) {
+      return {_: {}
+             ,cookie: b
+             ,postDB: a};
+   });
    var Post = F5(function (a,
    b,
    c,
@@ -4243,7 +4250,7 @@ Elm.Main.make = function (_elm) {
                return Error(ex._0);
                case "Ok": return ex._0;}
             _U.badCase($moduleName,
-            "between lines 87 and 90");
+            "between lines 91 and 94");
          }();
       };
       var decode = function (r) {
@@ -4258,7 +4265,7 @@ Elm.Main.make = function (_elm) {
                case "Waiting":
                return $Result.Err("Waiting");}
             _U.badCase($moduleName,
-            "between lines 82 and 86");
+            "between lines 86 and 90");
          }();
       };
       return function ($) {
@@ -4281,17 +4288,24 @@ Elm.Main.make = function (_elm) {
                case "NoOp":
                return $Http.get("/actions/noop");}
             _U.badCase($moduleName,
-            "between lines 102 and 106");
+            "between lines 106 and 110");
          }();
       };
       return $Signal.merge(postDBUpdates)($Signal.map(decodeUpdate)($Http.send(A2($Signal.map,
       encode,
       $Signal.subscribe(actions)))));
    }();
-   var state = A3($Signal.foldp,
+   var state = A3($Signal.map2,
+   F2(function (s,c) {
+      return _U.insert("cookie",
+      c,
+      s);
+   }),
+   A3($Signal.foldp,
    update,
    {_: {},postDB: $Dict.empty},
-   updates);
+   updates),
+   cookie);
    var voteButtons = function (p) {
       return function () {
          var downVote = A2($Html.span,
@@ -4367,20 +4381,40 @@ Elm.Main.make = function (_elm) {
       return function () {
          switch (_v20.ctor)
          {case "_Tuple2":
-            return A2($Html.toElement,
-              _v20._0,
-              _v20._1)(A2($Html.body,
-              _L.fromArray([]),
-              _L.fromArray([A2($Html.div,
-                           _L.fromArray([$Html$Attributes.$class("page-header")]),
-                           _L.fromArray([A2($Html.h1,
-                           _L.fromArray([]),
-                           _L.fromArray([$Html.text("CMSC 22300: Vote")]))]))
-                           ,A2($Html.main$,
-                           _L.fromArray([]),
-                           _L.fromArray([render(s)]))])));}
+            return function () {
+                 var actionButton = function () {
+                    var _v24 = s.cookie;
+                    switch (_v24.ctor)
+                    {case "Just": return A2($Html.a,
+                         _L.fromArray([$Html$Attributes.href("/submit.html")]),
+                         _L.fromArray([A2($Html.button,
+                         _L.fromArray([$Html$Attributes.$class("btn btn-default")]),
+                         _L.fromArray([$Html.text("Submit post")]))]));
+                       case "Nothing":
+                       return A2($Html.a,
+                         _L.fromArray([$Html$Attributes.href("/login.html")]),
+                         _L.fromArray([A2($Html.button,
+                         _L.fromArray([$Html$Attributes.$class("btn btn-default")]),
+                         _L.fromArray([$Html.text("Login")]))]));}
+                    _U.badCase($moduleName,
+                    "between lines 183 and 190");
+                 }();
+                 return A2($Html.toElement,
+                 _v20._0,
+                 _v20._1)(A2($Html.body,
+                 _L.fromArray([]),
+                 _L.fromArray([A2($Html.div,
+                              _L.fromArray([$Html$Attributes.$class("page-header")]),
+                              _L.fromArray([A2($Html.h1,
+                                           _L.fromArray([]),
+                                           _L.fromArray([$Html.text("CMSC 22300: Vote")]))
+                                           ,actionButton]))
+                              ,A2($Html.main$,
+                              _L.fromArray([]),
+                              _L.fromArray([render(s)]))])));
+              }();}
          _U.badCase($moduleName,
-         "between lines 179 and 183");
+         "between lines 183 and 198");
       }();
    });
    var main = A3($Signal.map2,

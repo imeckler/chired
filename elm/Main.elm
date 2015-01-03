@@ -8,6 +8,7 @@ import Html.Attributes (class, href)
 import Html.Events
 import Signal
 import List
+import List ((::))
 import Graphics.Element
 import Text
 import Json.Decode
@@ -31,7 +32,10 @@ type alias Post  =
   }
 type alias State =
   { postDB : Dict.Dict Int Post
+  , cookie : Maybe String
   }
+
+port cookie : Signal.Signal (Maybe String)
 
 -- User input
 type Action = NoOp | ClickUp ID | ClickDown ID
@@ -162,7 +166,7 @@ voteToInt v = case v of
   Up -> 1
   Down -> -1
 
-update : Update -> State -> State
+-- update : Update -> State -> State
 update u s = case u of
   SetVote idNum v ->
     {s | postDB <- Dict.update idNum
@@ -176,13 +180,27 @@ update u s = case u of
 
 -- scene : State -> (Int, Int) -> Element
 scene s (w,h) =
+  let actionButton = case s.cookie of
+        Nothing ->
+          Html.a [href "/login.html"] 
+            [Html.button [class "btn btn-default"] [Html.text "Login"]]
+        Just _  ->
+          Html.a [href "/submit.html"]
+            [Html.button [class "btn btn-default"] [Html.text "Submit post"]]
+  in
   Html.body []
-  [ Html.div [class "page-header"] [Html.h1 [] [Html.text "CMSC 22300: Vote"]]
+  [ Html.div [class "page-header"]
+    [ Html.h1 [] [Html.text "CMSC 22300: Vote"]
+    , actionButton 
+    ]
   , Html.main' [] [render s]
   ]
   |> Html.toElement w h
 
-state = Signal.foldp update {postDB = Dict.empty} updates
+state =
+  Signal.map2 (\s c -> {s | cookie = c})
+    (Signal.foldp update {postDB = Dict.empty} updates)
+    cookie
 
 main = Signal.map2 scene state Window.dimensions
 
