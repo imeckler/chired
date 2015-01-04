@@ -183,17 +183,19 @@ scene s (w,h) =
   let buttons = case s.cookie of
         Nothing ->
           [ Html.a [href "/login.html"] 
-              [Html.button [class "btn btn-default"] [Html.text "Login"]]]
+              [Html.button [class "btn btn-primary"] [Html.text "Login"]]]
         Just _  ->
           [ Html.a [href "/submit.html"]
-              [Html.button [class "btn btn-default"] [Html.text "Submit post"]]
+              [Html.button [class "btn btn-primary"] [Html.text "Submit post"]]
           , Html.a [href "/logout"]
               [Html.button [class "btn btn-default"] [Html.text "Logout"]]
           ]
   in
   Html.div [class "container"]
   [ Html.div [class "page-header"]
-      (Html.h1 [] [Html.text "CMSC 22300: Vote"] :: buttons)
+    [ Html.h1 [] [Html.text "CMSC 22300: Vote"]
+    , Html.div [class "buttons"] buttons
+    ]
   , Html.main' [] [render s]
   ]
   |> Html.toElement w h

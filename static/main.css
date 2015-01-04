@@ -50,3 +50,11 @@ body {
 .up {
   margin-left: 2px;
 }
+
+.page-header h1 {
+  display: inline-block;
+}
+
+.buttons {
+  float: right;
+}

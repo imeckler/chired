@@ -4389,7 +4389,7 @@ Elm.Main.make = function (_elm) {
                        return _L.fromArray([A2($Html.a,
                                            _L.fromArray([$Html$Attributes.href("/submit.html")]),
                                            _L.fromArray([A2($Html.button,
-                                           _L.fromArray([$Html$Attributes.$class("btn btn-default")]),
+                                           _L.fromArray([$Html$Attributes.$class("btn btn-primary")]),
                                            _L.fromArray([$Html.text("Submit post")]))]))
                                            ,A2($Html.a,
                                            _L.fromArray([$Html$Attributes.href("/logout")]),
@@ -4400,7 +4400,7 @@ Elm.Main.make = function (_elm) {
                        return _L.fromArray([A2($Html.a,
                          _L.fromArray([$Html$Attributes.href("/login.html")]),
                          _L.fromArray([A2($Html.button,
-                         _L.fromArray([$Html$Attributes.$class("btn btn-default")]),
+                         _L.fromArray([$Html$Attributes.$class("btn btn-primary")]),
                          _L.fromArray([$Html.text("Login")]))]))]);}
                     _U.badCase($moduleName,
                     "between lines 183 and 193");
@@ -4411,17 +4411,18 @@ Elm.Main.make = function (_elm) {
                  _L.fromArray([$Html$Attributes.$class("container")]),
                  _L.fromArray([A2($Html.div,
                               _L.fromArray([$Html$Attributes.$class("page-header")]),
-                              A2($List._op["::"],
-                              A2($Html.h1,
-                              _L.fromArray([]),
-                              _L.fromArray([$Html.text("CMSC 22300: Vote")])),
-                              buttons))
+                              _L.fromArray([A2($Html.h1,
+                                           _L.fromArray([]),
+                                           _L.fromArray([$Html.text("CMSC 22300: Vote")]))
+                                           ,A2($Html.div,
+                                           _L.fromArray([$Html$Attributes.$class("buttons")]),
+                                           buttons)]))
                               ,A2($Html.main$,
                               _L.fromArray([]),
                               _L.fromArray([render(s)]))])));
               }();}
          _U.badCase($moduleName,
-         "between lines 183 and 199");
+         "between lines 183 and 201");
       }();
    });
    var main = A3($Signal.map2,
