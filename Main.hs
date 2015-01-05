@@ -85,12 +85,6 @@ getAppState =
     Just x  -> return x
   where defaultState = AppState { postDB = M.empty, uid = 0 }
 
-{-
-postsToJSON :: PostDB -> TL.Text
-postsToJSON posts = bracket "[" "]" $ TL.intercalate "," (map postToJSON (M.elems posts)) where
-  postToJSON (t, s) = bracket "{" "}" $
-    "\"title\":" <> TL.pack (show t) <> ",\"score\":" <> TL.pack (show s)
--}
 newPost appState poster title content = do
   modifyMVar_ appState $ \(AppState {..}) -> do
     let post = Post {poster, title, content, votes = M.empty, idNum = uid}
