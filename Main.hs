@@ -160,7 +160,6 @@ main = do
       file "static/index.html"
 
     get "/posts" $ do
-      setHeader "Access-Control-Allow-Origin" "*"
       user <- loggedInUserErr key
       ps <- liftIO (postsForUser user <$> readMVar appState)
       liftIO (print =<< readMVar appState)
